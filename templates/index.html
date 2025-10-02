@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask & Firebase Todo App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7fa;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+        h1 {
+            color: #1a202c;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .db-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            border-left: 5px solid #ef4444;
+        }
+        /* Form Styling */
+        .add-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        .add-form input[type="text"] {
+            flex-grow: 1;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        .add-form input[type="text"]:focus {
+            border-color: #4299e1;
+            outline: none;
+        }
+        .add-form button {
+            padding: 12px 20px;
+            background-color: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px 6px rgba(66, 153, 225, 0.3);
+        }
+        .add-form button:hover {
+            background-color: #3182ce;
+        }
+        .add-form button:active {
+            transform: scale(0.98);
+        }
+
+        /* List Styling */
+        .todo-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #f7fafc;
+            border: 1px solid #ebf4ff;
+            border-radius: 8px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .todo-item:hover {
+            background-color: #edf2f7;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .todo-content {
+            flex-grow: 1;
+            font-size: 1.1rem;
+        }
+        .delete-form button {
+            background: none;
+            border: none;
+            color: #e53e3e;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin-left: 15px;
+            padding: 5px;
+            border-radius: 4px;
+            transition: color 0.3s, background-color 0.3s;
+        }
+        .delete-form button:hover {
+            color: white;
+            background-color: #e53e3e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Serverless Todo List</h1>
+        
+        {% if db_error %}
+        <div class="db-error">
+            {{ db_error }}
+        </div>
+        {% endif %}
+
+        <!-- Add Todo Form -->
+        <form method="POST" action="/" class="add-form">
+            <input type="text" name="content" placeholder="Enter a new task..." required>
+            <button type="submit">Add Task</button>
+        </form>
+
+        <!-- Todo List -->
+        <ul class="todo-list">
+            {% for todo in todos %}
+            <li class="todo-item">
+                <span class="todo-content">{{ todo.content }}</span>
+                <form method="POST" action="/delete/{{ todo.id }}" class="delete-form">
+                    <button type="submit" title="Delete Task">
+                        <!-- Trash icon (inline SVG) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em">
+                            <path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 10V18H7V10H9ZM13 10V18H11V10H13ZM17 10V18H15V10H17ZM9 4H15V6H9V4Z" />
+                        </svg>
+                    </button>
+                </form>
+            </li>
+            {% endfor %}
+            
+            {% if not todos %}
+            <li class="todo-item" style="justify-content: center; color: #718096; font-style: italic;">No tasks yet! Add one above.</li>
+            {% endif %}
+        </ul>
+    </div>
+</body>
+</html>
