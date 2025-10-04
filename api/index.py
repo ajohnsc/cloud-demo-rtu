@@ -28,7 +28,7 @@ try:
     gemini_api_key = os.environ.get("GEMINI_API_KEY")
     if gemini_api_key:
         genai.configure(api_key=gemini_api_key)
-        gemini_model = genai.GenerativeModel('gemini-pro')
+        gemini_model = genai.GenerativeModel('gemini-1.5-flash')
         print("Gemini AI successfully initialized.")
     else:
         print("Error: GEMINI_API_KEY environment variable not found.")
